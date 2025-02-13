@@ -81,8 +81,13 @@ public class RemoteImageTextAttachment: NSTextAttachment {
         }
         
         strongSelf.image = UIImage(data: data)
-        strongSelf.label?.setNeedsDisplay()
-        
+
+        if let tweetCell = strongSelf.label as? TweetCell {
+          tweetCell.relayout()
+        } else {
+          strongSelf.label?.setNeedsDisplay()
+        }
+
         // For UITextView/NSTextView
         if let layoutManager = self?.textContainer?.layoutManager,
           let ranges = layoutManager.rangesForAttachment(strongSelf) {

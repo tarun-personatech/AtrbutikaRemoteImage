@@ -174,6 +174,14 @@ class TweetCell: UITableViewCell, TweetContainingCell {
       tweetLabel.attributedText = tweet.styleAsTweet(labelView: tweetLabel)
     }
   }
+
+  func relayout() {
+    tweetLabel.setNeedsDisplay()
+//    tweetLabel.setNeedsLayout()
+//    tweetLabel.attributedText = tweetLabel.attributedText
+//    tweetLabel.setNeedsDisplayText(changedGeometry: true) // Need to expose it in library
+
+  }
 }
 
 // MARK: - TweetCellWithLabel
