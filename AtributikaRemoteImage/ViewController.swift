@@ -96,6 +96,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
 protocol TweetContainingCell: AnyObject {
   var tweet: String? { get set }
+  func relayout()
 }
 
 // MARK: - TweetCell
@@ -171,23 +172,26 @@ class TweetCell: UITableViewCell, TweetContainingCell {
         return
       }
 
-      tweetLabel.attributedText = tweet.styleAsTweet(labelView: tweetLabel)
+      tweetLabel.attributedText = tweet.styleAsTweet(labelView: self)
     }
   }
 
   func relayout() {
-    tweetLabel.setNeedsDisplay()
+    // Nothing of the below works
+//    tweetLabel.setNeedsDisplay()
 //    tweetLabel.setNeedsLayout()
 //    tweetLabel.attributedText = tweetLabel.attributedText
 //    tweetLabel.setNeedsDisplayText(changedGeometry: true) // Need to expose it in library
 
+    // This works - Provided you modify the library and expose the underlying backend UILabel/UITextView
+    // tweetLabel.backendView.setNeedsDisplay()
   }
 }
 
 // MARK: - TweetCellWithLabel
 
 class TweetCellWithLabel: UITableViewCell, TweetContainingCell {
-  private var tweetLabel: UILabel!
+  private var uiLabel: UILabel!
 
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -195,20 +199,20 @@ class TweetCellWithLabel: UITableViewCell, TweetContainingCell {
   }
 
   func setupAttributedLabel() {
-    tweetLabel = UILabel()
+    uiLabel = UILabel()
 
-    contentView.addSubview(tweetLabel)
+    contentView.addSubview(uiLabel)
 
     let marginGuide = contentView.layoutMarginsGuide
 
-    tweetLabel.translatesAutoresizingMaskIntoConstraints = false
-    tweetLabel.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
-    tweetLabel.topAnchor.constraint(equalTo: marginGuide.topAnchor).isActive = true
-    tweetLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
-    tweetLabel.bottomAnchor.constraint(equalTo: marginGuide.bottomAnchor).isActive = true
+    uiLabel.translatesAutoresizingMaskIntoConstraints = false
+    uiLabel.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
+    uiLabel.topAnchor.constraint(equalTo: marginGuide.topAnchor).isActive = true
+    uiLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
+    uiLabel.bottomAnchor.constraint(equalTo: marginGuide.bottomAnchor).isActive = true
 
-    tweetLabel.numberOfLines = 0
-    tweetLabel.font = .preferredFont(forTextStyle: .body)
+    uiLabel.numberOfLines = 0
+    uiLabel.font = .preferredFont(forTextStyle: .body)
   }
 
   @available(*, unavailable)
@@ -222,8 +226,12 @@ class TweetCellWithLabel: UITableViewCell, TweetContainingCell {
         return
       }
 
-      tweetLabel.attributedText = tweet.styleAsTweet(labelView: tweetLabel)
+      uiLabel.attributedText = tweet.styleAsTweet(labelView: self)
     }
+  }
+
+  func relayout() {
+    uiLabel.setNeedsDisplay()
   }
 }
 

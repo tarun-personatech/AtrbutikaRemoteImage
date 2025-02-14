@@ -82,7 +82,7 @@ public class RemoteImageTextAttachment: NSTextAttachment {
         
         strongSelf.image = UIImage(data: data)
 
-        if let tweetCell = strongSelf.label as? TweetCell {
+        if let tweetCell = strongSelf.label as? TweetContainingCell {
           tweetCell.relayout()
         } else {
           strongSelf.label?.setNeedsDisplay()
